@@ -1,0 +1,30 @@
+
+# ------------------------------------
+# GLOBAL CONFIGURATION
+# ------------------------------------
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+
+# ------------------------------------
+# SCRAPE CONFIGURATION
+# ------------------------------------
+
+scrape_configs:
+
+  # Monitor Prometheus itself
+  - job_name: "prometheus"
+
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+
+  # Monitor SmartShop application
+  - job_name: "smartshop-api"
+
+    metrics_path: /metrics
+
+    static_configs:
+      - targets: ["app:8000"]

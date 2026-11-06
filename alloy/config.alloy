@@ -1,0 +1,66 @@
+
+// --------------------------------------
+// 1. DISCOVER DOCKER CONTAINERS
+// --------------------------------------
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+}
+
+
+// --------------------------------------
+// 2. ASSIGN CONTAINER LABELS
+// --------------------------------------
+
+discovery.relabel "container_logs" {
+
+  targets = []
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex = "/(.*)"
+    target_label = "container"
+  }
+}
+
+
+// --------------------------------------
+// 3. COLLECT DOCKER LOGS
+// --------------------------------------
+
+loki.source.docker "containers" {
+
+  host = "unix:///var/run/docker.sock"
+
+  targets = discovery.docker.containers.targets
+
+  labels = {
+    job = "docker",
+  }
+
+  relabel_rules = discovery.relabel.container_logs.rules
+
+  forward_to = [loki.write.local.receiver]
+}
+
+
+// --------------------------------------
+// 4. SEND LOGS TO LOKI
+// --------------------------------------
+
+loki.write "local" {
+
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+
+// --------------------------------------
+// 5. ENABLE ALLOY LIVE DEBUGGING
+// --------------------------------------
+
+livedebugging {
+  enabled = true
+}

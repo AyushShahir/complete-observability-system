@@ -1,0 +1,27 @@
+# Python virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Python compiled bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE and Editor files (VS Code)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Environment variables / secrets
+.env
+
+# Local database or log storage overrides (if any)
+*.log
